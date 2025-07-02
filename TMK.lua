@@ -12,7 +12,7 @@ local btns = serv:Channel("Tomaki")
 local autoBuyAllSeeds = false
 
 -- ปุ่ม Toggle เปิด/ปิด
-btns:Toggle("🌱 Auto Buy All Seeds", false, function(state)
+btns:Toggle("ซื้อเมล็ดพืชทั้งหมด", false, function(state)
     autoBuyAllSeeds = state
     spawn(function()
         while autoBuyAllSeeds do
@@ -34,7 +34,7 @@ end)
 
 -- 🧰 Auto Buy Tools (Watering Can + Trowel)
 local autoBuyGears = false
-btns:Toggle("💧 Auto Buy Gears", false, function(state)
+btns:Toggle("ซื้อเครื่องมือทั้งหมด", false, function(state)
     autoBuyGears = state
     spawn(function()
         while autoBuyGears do
@@ -53,7 +53,7 @@ end)
 
 -- 🥚 Auto Buy Pet Eggs ID 1, 2, 3
 local autoBuyEggs = false
-btns:Toggle("🥚 Auto Buy Pet Eggs", false, function(state)
+btns:Toggle("ซื้อไข่ทั้งหมด(ยกเว้นร้านค้าอีเว้น)", false, function(state)
     autoBuyEggs = state
     spawn(function()
         while autoBuyEggs do
