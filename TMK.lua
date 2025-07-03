@@ -90,7 +90,51 @@ btns:Toggle("ซื้อแพ็กเมล็ดอีเว้นซัม�
         while autoSummerSeedPack do
             local args = {"Summer Seed Pack"}
             game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("BuyEventShopStock"):FireServer(unpack(args))
-            task.wait(0.5)
+            task.wait(0.2)
+        end
+    end)
+end)
+
+-- =====================
+-- Auto Summer Harvest (NEW) + ถือ Tomato ที่น้ำหนักมากกว่าหรือเท่ากับ 0.5kg อัตโนมัติ
+-- =====================
+local autoSummerHarvestWithTomato = false
+btns:Toggle("ส่งเควสอีเว้น (ส่งได้แค่มะเขือเทศ Tomato)", false, function(state)
+    autoSummerHarvestWithTomato = state
+    spawn(function()
+        while autoSummerHarvestWithTomato do
+            local player = game:GetService("Players").LocalPlayer
+            local backpack = player:FindFirstChild("Backpack")
+            local char = player.Character
+            local targetWeight = 0.1
+            local selectedTool = nil
+            local maxWeight = -math.huge
+
+            -- ค้นหา Tomato ที่น้ำหนักมากกว่าหรือเท่ากับ 0.5kg มากที่สุดใน Backpack
+            if backpack then
+                for _, tool in ipairs(backpack:GetChildren()) do
+                    local name = tool.Name
+                    local weight = string.match(name, "Tomato %[(%d+%.?%d*)kg%]")
+                    weight = tonumber(weight)
+                    if weight and weight >= targetWeight and weight > maxWeight then
+                        selectedTool = tool
+                        maxWeight = weight
+                    end
+                end
+            end
+
+            -- ถือ Tomato ที่ต้องการถ้ามีและยังไม่ได้ถือ
+            if selectedTool and char and char:FindFirstChild("Humanoid") then
+                if not char:FindFirstChild(selectedTool.Name) then
+                    char.Humanoid:EquipTool(selectedTool)
+                    task.wait(0.1)
+                end
+            end
+
+            -- ส่งเควสอีเว้น
+            local args = {"SubmitHeldPlant"}
+            game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("SummerHarvestRemoteEvent"):FireServer(unpack(args))
+            task.wait(0.1)
         end
     end)
 end)
