@@ -4,9 +4,9 @@ local DiscordLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bl
 -- =====================
 -- 1. DiscordLib UI Setup
 -- =====================
-local win = DiscordLib:Window("TMK")
+local win = DiscordLib:Window("TMKZrss")
 local serv = win:Server("By: Tomaki Zyrex", "http://www.roblox.com/asset/?id=6031075938")
-local btns = serv:Channel("Tomaki")
+local btns = serv:Channel("หน้าหลัก")
 
 -- =====================
 -- 2. ฟีเจอร์ Auto ต่างๆ
