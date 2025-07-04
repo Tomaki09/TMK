@@ -95,6 +95,60 @@ btns:Toggle("ซื้อแพ็กเมล็ดอีเว้นซัม�
     end)
 end)
 
+-- Auto Harvest Tomato เข้ากระเป๋า (DISCORD UI)
+-- =====================
+local autoTomatoHarvest = false
+local tomatoThread = nil
+
+btns:Toggle("เก็บผลอีเว้น (เก็บได้แค่ Tomato)", false, function(state)
+    autoTomatoHarvest = state
+    if autoTomatoHarvest and not tomatoThread then
+        tomatoThread = task.spawn(function()
+            while autoTomatoHarvest do
+                local success, err = pcall(function()
+                    local player = game.Players.LocalPlayer
+                    local farmFolder = workspace:FindFirstChild("Farm")
+                    if farmFolder then
+                        for _, farm in ipairs(farmFolder:GetChildren()) do
+                            local important = farm:FindFirstChild("Important")
+                            local data = important and important:FindFirstChild("Data")
+                            if data and data:FindFirstChild("Owner") and data.Owner.Value == player.Name then
+                                local plants = important:FindFirstChild("Plants_Physical")
+                                if plants then
+                                    for _, crop in ipairs(plants:GetChildren()) do
+                                        -- เฉพาะที่ชื่อ Tomato (ไม่สนใจตัวเล็กตัวใหญ่)
+                                        if string.lower(crop.Name) == "tomato" then
+                                            local fruits = crop:FindFirstChild("Fruits")
+                                            if fruits then
+                                                for _, fruit in ipairs(fruits:GetChildren()) do
+                                                    if string.find(string.lower(fruit.Name), "tomato") then
+                                                        local remote = game:GetService("ReplicatedStorage"):FindFirstChild("ByteNetReliable")
+                                                        if remote then
+                                                            local argStr = buffer and buffer.fromstring and buffer.fromstring("\001\002\000\001\002") or "\001\002\000\001\002"
+                                                            remote:FireServer(argStr, {fruit, fruit})
+                                                        end
+                                                        task.wait(0.01)
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+                if not success then
+                    warn("Error AutoHarvest Tomato:", err)
+                end
+                task.wait(0.01)
+            end
+        end)
+    elseif not autoTomatoHarvest and tomatoThread then
+        tomatoThread = nil
+    end
+end)
+
 -- =====================
 -- Auto Summer Harvest (NEW) + ถือ Tomato ที่น้ำหนักมากกว่าหรือเท่ากับ 0.5kg อัตโนมัติ
 -- =====================
@@ -127,7 +181,7 @@ btns:Toggle("ส่งเควสอีเว้น (ส่งได้แค�
             if selectedTool and char and char:FindFirstChild("Humanoid") then
                 if not char:FindFirstChild(selectedTool.Name) then
                     char.Humanoid:EquipTool(selectedTool)
-                    task.wait(0.1)
+                    task.wait(0.015)
                 end
             end
 
